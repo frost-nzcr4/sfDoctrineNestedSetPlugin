@@ -151,7 +151,7 @@ Edit MODULE_NAMEForm.class.php file, Add the following code:
     	$this->getValidator('parent')->setMessage('node', 'A category cannot be made a descendent of itself.');
     }
 
-    protected function doUpdateObject($values=null)
+    protected function doUpdateObject($values)
     {
         $values = $this->getObject()->updateNestedSetObject($values, $this->isNew());
 
