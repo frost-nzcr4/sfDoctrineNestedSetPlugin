@@ -61,6 +61,7 @@ In your module, edit config/generator.yml, and under list, object actions, add:
 In your module, edit 'actions.class.php', Add the following methods:
 
 ``` php
+    <?php
 	// YourModuleName/actions.class.php
     public function executeDelete(sfWebRequest $request)
     {
@@ -129,13 +130,19 @@ In your module, edit 'actions.class.php', Add the following methods:
     }
 ```
 
-Methods "executeDelete", "executeBatchDelete" are similar to methods you can find in cache. The only difference is method "getNode()" prepending method "delete()". Change MODULE_NAME in method "executeBatchDelete()". Method "addSortQuery()" completely rewritten because the order of nestedset is already defined ('position asc, lft asc'). Change "@moduleIndexRoute" according to your router.
+Methods "executeDelete", "executeBatchDelete" are similar to methods you can
+find in cache. The only difference is method "getNode()" prepending method
+"delete()". Change MODULE_NAME in method "executeBatchDelete()". Method
+"addSortQuery()" completely rewritten because the order of nestedset is already
+defined ('position asc, lft asc'). Change "@moduleIndexRoute" according to your
+router.
 
 #### MODULE_NAMEForm.class.php
 
-Edit MODULE_NAMEForm.class.php file, Add the following code:
+Edit MODULE_NAMEForm.class.php file, add the following code:
 
 ``` php
+    <?php
     public function configure()
     {
         // ...
@@ -181,9 +188,11 @@ Edit MODULE_NAMEForm.class.php file, Add the following code:
 
 #### MODULE_NAMEFilter.class.php
 
-If you want to filter records by root_id column you can add following code to file MODULE_NAMEFilter.class.php:
+If you want to filter records by root_id column you can add following code to
+file MODULE_NAMEFilter.class.php:
 
 ``` php
+    <?php
     public function configure()
     {
         $this->setWidget('parent', new sfWidgetFormDoctrineChoice(array(
@@ -214,7 +223,9 @@ If you want to filter records by root_id column you can add following code to fi
 
 #### _list_td_tabular.php
 
-Add indentation to make nestedset list looks more appealing. Copy file '_list_td_tabular.php' from cache to 'templates' directory. Add inline style to TD tag where you want to see indentation:
+Add indentation to make nestedset list looks more appealing. Copy file
+'_list_td_tabular.php' from cache to 'templates' directory. Add inline style to
+TD tag where you want to see indentation:
 
 ``` html
     style="padding-left: <?php echo $MODULENAME->getLevel()*20;?>px;"
@@ -244,13 +255,20 @@ and add plugin stylesheets to view.yml file
     stylesheets: [/sfDoctrineNestedSetPlugin/css/nestedset.css]
 ```
 
-As you can see above we use widget sfWidgetFormDoctrineChoiceNestedSet and validator sfValidatorDoctrineNestedSet which included in the plugin. You can use its as ordinary Symfony widgets and validators.
+As you can see above we use widget sfWidgetFormDoctrineChoiceNestedSet and
+validator sfValidatorDoctrineNestedSet which included in the plugin. You can use
+its as ordinary Symfony widgets and validators.
 
 ### sfWidgetFormDoctrineChoiceNestedSet
 
-The sfWidgetFormDoctrineChoiceNestedSet functions nearly the same as sfWidgetFormDoctrineChoice, the only difference being that it will automatically sort the items by their hierarchy, and will indent each item according to its level. As this widget extends sfWidgetFormDoctrineChoice, it can be added without any other code changes necessary:
+The sfWidgetFormDoctrineChoiceNestedSet functions nearly the same as
+sfWidgetFormDoctrineChoice, the only difference being that it will automatically
+sort the items by their hierarchy, and will indent each item according to its
+level. As this widget extends sfWidgetFormDoctrineChoice, it can be added
+without any other code changes necessary:
 
 ``` php
+    <?php
     $this->setWidget('item', new sfWidgetFormDoctrineChoiceNestedSet(array(
         'model'     => $this->getModelName(),
         'add_empty' => true,
@@ -266,9 +284,16 @@ The order you can define in 'query' option.
 
 ### sfValidatorDoctrineNestedSet
 
-The sfValidatorDoctrineNestedSet provides validation by checking that the selected node is not a descendant of the node passed to it during configuration (and that they are not the same). This can be used to ensure that when moving a node, it is not made a descendant of itself. The validator extends from sfValidatorBase and includes two required options: 'model', which is the model class, and 'node', which is the node that the selected item is being checked against. Normally, this will be the form's object:
+The sfValidatorDoctrineNestedSet provides validation by checking that the
+selected node is not a descendant of the node passed to it during configuration
+(and that they are not the same). This can be used to ensure that when moving a
+node, it is not made a descendant of itself. The validator extends from
+sfValidatorBase and includes two required options: 'model', which is the model
+class, and 'node', which is the node that the selected item is being checked
+against. Normally, this will be the form's object:
 
 ``` php
+    <?php
     $this->setValidator('item', new sfValidatorDoctrineNestedSet(array(
         'model' => $this->getModelName(),
         'node'  => $this->getObject(),
@@ -277,4 +302,5 @@ The sfValidatorDoctrineNestedSet provides validation by checking that the select
 
 ## Support
 
-For more information please feel free to visit [halestock.wordpress.com](http://halestock.wordpress.com) and leave a comment.
+For more information please feel free to visit
+[halestock.wordpress.com](http://halestock.wordpress.com) and leave a comment.
