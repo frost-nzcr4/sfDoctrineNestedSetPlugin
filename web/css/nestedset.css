@@ -1,0 +1,8 @@
+#sf_admin_container ul li.sf_admin_action_promote a
+{
+	background:transparent url(../images/nestedset/icons/promote.png) no-repeat scroll 0 0;
+}
+#sf_admin_container ul li.sf_admin_action_demote a
+{
+	background:transparent url(../images/nestedset/icons/demote.png) no-repeat scroll 0 0;
+}
