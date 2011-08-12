@@ -140,6 +140,7 @@ Edit MODULE_NAMEForm.class.php file, Add the following code:
 
     	if ($this->getObject()->getNode()->hasParent())
     	{
+    		// FIXME: You should change getId() method to that your own model used (i. e. getModelId())
     		$this->setDefault('parent', $this->getObject()->getNode()->getParent()->getId());
     	}
 
