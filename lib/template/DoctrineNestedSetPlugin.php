@@ -206,7 +206,7 @@ class Doctrine_Template_DoctrineNestedSetPlugin extends Doctrine_Template_Nested
             ->where($this->_nestedset_options['name'].' = ?', $object[$this->_nestedset_options['name']])
             ->andWhere($this->_nestedset_options['rootColumnName'].' = ?', $object[$this->_nestedset_options['rootColumnName']])
             ->execute();
-    
+
     // Commit Transaction
     $connection->commit();
   }
@@ -242,7 +242,7 @@ class Doctrine_Template_DoctrineNestedSetPlugin extends Doctrine_Template_Nested
    */
   public function updateNestedSetObject($values, $isNew=true)
   {
-      
+
       $object = $this->getInvoker();
       $this->_isnew = $isNew;
 
@@ -274,35 +274,25 @@ class Doctrine_Template_DoctrineNestedSetPlugin extends Doctrine_Template_Nested
    */
   public function saveNestedSetObject()
   {
-      
     $object = $this->getInvoker();
 
-		if ($this->_parent)
-		{
-			if ($this->_isnew)
-			{
-				$object->getNode()->insertAsLastChildOf($this->_parent);
-			}
-			else
-			{
-				$object->getNode()->moveAsLastChildOf($this->_parent);
-                $this->changeDependentPositions();
-			}
+	if ($this->_parent) {
+		if ($this->_isnew) {
+			$object->getNode()->insertAsLastChildOf($this->_parent);
+		} else {
+			$object->getNode()->moveAsLastChildOf($this->_parent);
+			$this->changeDependentPositions();
 		}
-		else
-		{
-			$categoryTree = $object->getTable()->getTree();
-            
-			if ($this->_isnew)
-			{
-				$categoryTree->createRoot($object);
-			}
-			else
-			{
-				$object->getNode()->makeRoot($object->getId());
-                $this->changeDependentPositions();
-			}
+	} else {
+		$categoryTree = $object->getTable()->getTree();
+
+		if ($this->_isnew) {
+			$categoryTree->createRoot($object);
+		} else {
+			$object->getNode()->makeRoot($object->getId());
+			$this->changeDependentPositions();
 		}
+	}
   }
 
   /**
@@ -323,7 +313,7 @@ class Doctrine_Template_DoctrineNestedSetPlugin extends Doctrine_Template_Nested
               $child[$this->_nestedset_options['name']] = $object[$this->_nestedset_options['name']];
               $child->save();
           }
-          
+
       }
 
       // recalculate positions if node was root but now not
