@@ -289,7 +289,7 @@ class Doctrine_Template_DoctrineNestedSetPlugin extends Doctrine_Template_Nested
 		if ($this->_isnew) {
 			$categoryTree->createRoot($object);
 		} else {
-			$object->getNode()->makeRoot($object->getId());
+			$object->getNode()->makeRoot($object->getPrimaryKey());
 			$this->changeDependentPositions();
 		}
 	}

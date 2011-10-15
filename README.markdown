@@ -159,8 +159,8 @@ Edit MODULE_NAMEForm.class.php file, add the following code:
 
         if ($this->getObject()->getNode()->hasParent())
         {
-            // FIXME: You should change getId() method to that your own model used (i. e. getModelId())
-            $this->setDefault('parent', $this->getObject()->getNode()->getParent()->getId());
+            // FIXME: You can change getPrimaryKey() method to that your own model used (i. e. getModelId())
+            $this->setDefault('parent', $this->getObject()->getNode()->getParent()->getPrimaryKey());
         }
 
         $this->setValidator('parent', new sfValidatorDoctrineChoiceNestedSet(array(
