@@ -231,7 +231,8 @@ class Doctrine_Template_DoctrineNestedSetPlugin extends Doctrine_Template_Nested
 		}
 		// if root
 		else {
-			$values[$this->_nestedset_options['name']] = $this->getFinalPosition()+1;
+			// :FIXME: do not change position when it sets manually.
+			//$values[$this->_nestedset_options['name']] = $this->getFinalPosition() + 1;
 		}
 
 		return $values;

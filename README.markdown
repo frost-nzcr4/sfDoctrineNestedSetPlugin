@@ -151,10 +151,10 @@ Edit MODULE_NAMEForm.class.php file, add the following code:
             'model'     => $this->getModelName(),
             'add_empty' => true,
             'query'     => $this->getObject()
-                          ->getTable()
-                          ->createQuery()
-                          ->select()
-                          ->orderBy('position asc, lft asc')
+                              ->getTable()
+                              ->createQuery()
+                              ->select()
+                              ->orderBy('position asc, lft asc')
     	)));
 
         if ($this->getObject()->getNode()->hasParent())
@@ -165,10 +165,17 @@ Edit MODULE_NAMEForm.class.php file, add the following code:
 
         $this->setValidator('parent', new sfValidatorDoctrineChoiceNestedSet(array(
 	        'required' => false,
-	        'model' => $this->getModelName(),
-	        'node' => $this->getObject()
+	        'model'    => $this->getModelName(),
+	        'node'     => $this->getObject()
         )));
         $this->getValidator('parent')->setMessage('node', 'A category cannot be made a descendent of itself.');
+        
+        $this->setValidator('position', new sfValidatorDoctrineNestedSetPosition(array(
+            'required' => false,
+            'model'    => $this->getModelName(),
+            'node'     => $this->getObject()
+        )));
+        $this->getValidator('position')->setMessage('position', 'This node position is in use by other node.');
     }
 
     protected function doUpdateObject($values)
