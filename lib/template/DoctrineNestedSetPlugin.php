@@ -18,12 +18,13 @@ class Doctrine_Template_DoctrineNestedSetPlugin extends Doctrine_Template_Nested
    *
    * @var string
    */
-  protected $_nestedset_options = array('name'        =>  'position',
-                                        'alias'       =>  null,
-                                        'type'        =>  'integer',
-                                        'length'      =>  8,
-                                        'hasManyRoots' => 1,
-                                        'rootColumnName' => 'root_id'
+  protected $_nestedset_options = array(
+		'name'        =>  'position',
+		'alias'       =>  null,
+		'type'        =>  'integer',
+		'length'      =>  8,
+		'hasManyRoots' => 1,
+		'rootColumnName' => 'root_id'
   );
 
   // Doctrine_Record object of parent node
@@ -48,12 +49,10 @@ class Doctrine_Template_DoctrineNestedSetPlugin extends Doctrine_Template_Nested
   {
     $this->_nestedset_options = Doctrine_Lib::arrayDeepMerge($this->_nestedset_options, $options);
 
-    if (!isset($options['hasManyRoots']))
-    {
+    if (!isset($options['hasManyRoots'])) {
       $options['hasManyRoots'] = 1;
 
-      if (!isset($options['rootColumnName']))
-      {
+      if (!isset($options['rootColumnName'])) {
         $options['rootColumnName'] = 'root_id';
       }
     }
@@ -79,17 +78,14 @@ class Doctrine_Template_DoctrineNestedSetPlugin extends Doctrine_Template_Nested
    */
   public function setTableDefinition()
   {
-        if (isset($this->_nestedset_options['hasManyRoots']) && $this->_nestedset_options['hasManyRoots'])
-        {
+        if (isset($this->_nestedset_options['hasManyRoots']) && $this->_nestedset_options['hasManyRoots']) {
             $name = $this->_nestedset_options['name'];
 
-            if ($this->_nestedset_options['alias'])
-            {
+            if ($this->_nestedset_options['alias']) {
               $name .= ' as ' . $this->_nestedset_options['alias'];
             }
 
             $this->hasColumn($name, $this->_nestedset_options['type'], $this->_nestedset_options['length']);
-
             $this->addListener(new Doctrine_Template_Listener_DoctrineNestedSetPlugin($this->_nestedset_options));
         }
 
@@ -107,28 +103,18 @@ class Doctrine_Template_DoctrineNestedSetPlugin extends Doctrine_Template_Nested
     $object = $this->getInvoker();
     $position = $object->get($this->_nestedset_options['name']);
 
-    if ($object->getNode()->isRoot())
-    {
-        if($object->getFinalPosition() == $position)
-        {
+    if ($object->getNode()->isRoot()) {
+        if ($object->getFinalPosition() == $position) {
             return false;
-        }
-        else
-        {
+        } else {
             $this->move(false);
             return true;
         }
-
-    }
-    else
-    {
-        if ($object->getNode()->hasNextSibling())
-        {
+    } else {
+        if ($object->getNode()->hasNextSibling()) {
             $object->getNode()->moveAsNextSiblingOf($object->getNode()->getNextSibling());
             return true;
-        }
-        else
-        {
+        } else {
             return false;
         }
     }
@@ -143,28 +129,20 @@ class Doctrine_Template_DoctrineNestedSetPlugin extends Doctrine_Template_Nested
   {
     $object = $this->getInvoker();
 
-    if ($object->getNode()->isRoot())
-    {
+    if ($object->getNode()->isRoot()) {
         if(1 == $object[$this->_nestedset_options['name']])
         {
             return false;
-        }
-        else
-        {
+        } else {
             $this->move(true);
             return true;
         }
-
-    }
-    else
-    {
+    } else {
         if ($object->getNode()->hasPrevSibling())
         {
             $object->getNode()->moveAsPrevSiblingOf($object->getNode()->getPrevSibling());
             return true;
-        }
-        else
-        {
+        } else {
             return false;
         }
     }
@@ -183,9 +161,7 @@ class Doctrine_Template_DoctrineNestedSetPlugin extends Doctrine_Template_Nested
     {
         $set = $this->_nestedset_options['name'].' + 1';
         $pos = $object[$this->_nestedset_options['name']] - 1;
-    }
-    else
-    {
+    } else {
         $set = $this->_nestedset_options['name'].' - 1';
         $pos = $object[$this->_nestedset_options['name']] + 1;
     }
@@ -240,31 +216,25 @@ class Doctrine_Template_DoctrineNestedSetPlugin extends Doctrine_Template_Nested
    * @param boolean $isNew
    * @return array
    */
-  public function updateNestedSetObject($values, $isNew=true)
+  public function updateNestedSetObject($values, $isNew = true)
   {
+		$object = $this->getInvoker();
+		$this->_isnew = $isNew;
 
-      $object = $this->getInvoker();
-      $this->_isnew = $isNew;
+		// if not root
+		if (isset($values['parent']) && !is_null($values['parent'])) {
+			if ($object->getNode()->isRoot()) {
+				$this->_prev_root_position = ((int)$values[$this->_nestedset_options['name']] > 0) ? (int)$values[$this->_nestedset_options['name']] : false;
+			}
+			$this->_parent = $object->getTable()->find((int)$values['parent']);
+			$values[$this->_nestedset_options['name']] = $this->_parent[$this->_nestedset_options['name']];
+		}
+		// if root
+		else {
+			$values[$this->_nestedset_options['name']] = $this->getFinalPosition()+1;
+		}
 
-      // if not root
-
-      if (isset($values['parent']) && !is_null($values['parent']))
-      {
-            if ($object->getNode()->isRoot())
-            {
-                $this->_prev_root_position = ((int)$values[$this->_nestedset_options['name']] > 0) ? (int)$values[$this->_nestedset_options['name']] : false;
-            }
-            $this->_parent = $object->getTable()->find((int)$values['parent']);
-            $values[$this->_nestedset_options['name']] = $this->_parent[$this->_nestedset_options['name']];
-      }
-
-      // if root
-      else
-      {
-            $values[$this->_nestedset_options['name']] = $this->getFinalPosition()+1;
-      }
-
-      return $values;
+		return $values;
   }
 
   /**
@@ -305,21 +275,15 @@ class Doctrine_Template_DoctrineNestedSetPlugin extends Doctrine_Template_Nested
       $object = $this->getInvoker();
 
       // change the position of children nodes
-
-      if ($object->getNode()->hasChildren())
-      {
-          foreach ($object->getNode()->getDescendants() as $child)
-          {
+      if ($object->getNode()->hasChildren()) {
+          foreach ($object->getNode()->getDescendants() as $child) {
               $child[$this->_nestedset_options['name']] = $object[$this->_nestedset_options['name']];
               $child->save();
           }
-
       }
 
       // recalculate positions if node was root but now not
-
-      if (false !== $this->_prev_root_position)
-      {
+      if (false !== $this->_prev_root_position) {
           $object->getTable()->createQuery()
                   ->update()
                   ->set($this->_nestedset_options['name'], $this->_nestedset_options['name'].' - 1')
@@ -327,5 +291,4 @@ class Doctrine_Template_DoctrineNestedSetPlugin extends Doctrine_Template_Nested
                   ->execute();
       }
   }
-
 }
